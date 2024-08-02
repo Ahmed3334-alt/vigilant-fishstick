@@ -1,28 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
 
-public class VESHON : MonoBehaviour
+public class BehaviourScript : MonoBehaviour
 {
-public Transform body;
-public float Sensitiviti = 0f;
-private float limitation = 0f;
-
-    void Start()
-    {
-     Cursor.lockState = CursorLockMode.Locked;   
-    }
-
+  public Transform sfera;
+  public float chekSphera = 0.4f;
+  public LayerMask sloy;
+  public float jumpPower = 3f;
+  private Vector3 velosity;
+  private bool isGraunded;
+  public float graviti = 4.734673f;
     void Update()
     {
-      float mouseX = Input.GetAxis("Mouse X") * Sensitiviti * Time.deltaTime;
-      float mouseY = Input.GetAxis("Mouse Y") * Sensitiviti * Time.deltaTime;
-      
-      limitation -= mouseY;
-      limitation = Mathf.Clamp(limitation,-90,90);
-      transform.localRotation = Quaternion.Euler(limitation,0,0);
-      body.Rotate(Vector3.up,+mouseX);
+      isGraunded = Physics.CheckSphere(sfera.position,chekSphera,sloy);
+      if(isGraunded&&velosity.y <0)
+      {
+        velosity.y += -2f;
+      }
+   
+       if(Input.GetButtonDown("Jump")&&isGraunded)
+     {
+       velosity.y = Mathf.Sqrt(jumpPower*-2f*graviti);
+     }
     }
-
 }
