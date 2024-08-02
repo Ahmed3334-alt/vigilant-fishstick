@@ -1,67 +1,66 @@
-
+using System.Collections;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
-
-
-public class MovePlaer : MonoBehaviour
+public class NewBehaviour : MonoBehaviour
 {
-     
-    
-    
-    private Rigidbody rb;
-    
-    private void Awake()
-    {
-     rb = GetComponent<Rigidbody>();
-    }
-  public float speed1 = 4,speed2 = 4;
-    private void FixedUpdate() 
-    {
-     float h = Input.GetAxis("Horizontal") * speed1 * Time.fixedDeltaTime ;
-     float v = Input.GetAxis("Vertical") * speed2 * Time.fixedDeltaTime;
-     
-      rb.velocity = transform.TransformDirection(new Vector3(-v,rb.velocity.y,h));
-    }
-public float thrust = 500f;
+    public CharacterController controller;
+    public float speed = 10f;
+    public float JumpPower = 3f;
+    public float gravity = 18.692f;
+    public LayerMask sloy;
+    private Vector3 velosity;
+    public Transform sfera;
+    private float cheksphera = 3;
+    private bool isGraunded;
 
-    private void OnCollisionEnter(Collision other)
+    void Start()
     {
-      if(other.gameObject.name == "Cube (8)")
-      {
-       rb.AddForce(new Vector3 (0,1,0) * thrust);
-      } 
+     Cursor.lockState=CursorLockMode.Locked;
     }
 
-    private void OnCollisionExit(Collision other)
+    // Update is called once per frame
+    void Update()
     {
-    //  Debug.Log("HELLO"); 
-    }
-
-    private void OnTriggerEnter(Collider other) 
-    {
-     if(other.gameObject.name == "box")
-     {
-      Debug.Log("box by");
+     float v = Input.GetAxis("Vertical");//Движение персонажа
+     float h = Input.GetAxis("Horizontal");
+     Vector3 move = transform.right*h +transform.forward*v;
+     controller.Move(move*speed*Time.deltaTime);
+    
+     velosity.y+=gravity*Time.deltaTime; //Создаём физику
+     controller.Move(velosity*Time.deltaTime);
+     isGraunded=Physics.CheckSphere(sfera.position,cheksphera ,sloy);//CheckSphere Этот метод проверяет пересекаются
+                                                                     // ли наша сфера с заданным объектом
+       if(isGraunded&&velosity.y<0)
+       {
+        velosity.y += -2f;
+       }                                                               
+       if(Input.GetButtonDown("Jump")&&isGraunded)
+       {
+        velosity.y = Mathf.Sqrt(JumpPower*-2f*gravity);
+       }
       
-     }
+       if(Input.GetKey("left shift"))
+       {
+        speed = 50f;
+       
+       }
+        else
+        {
+         speed = 10f;
+        }
+       
+       if(Input.GetKey("c"))
+       {
+        controller.height = 1f;
+       
+       }
+        else
+        {
+         controller.height = 2f;
+        }
+        
+        
+
     }
 }
-
-
-  
-
-//  КОРЗИНА\/
-// float m = Input.GetAxis("Vertical");
-  //  transform.Translate(new Vector3(-1,0,0) * SpeedPlayer * Time.deltaTime * m );
-
-    //  float o = Input.GetAxis("Horizontal");
-    //  transform.Translate(new Vector3(0,1,0) * SpeedPlayer * Time.deltaTime * o );
-
-
-
-
-
-
-
-
-
-
