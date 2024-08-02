@@ -1,43 +1,60 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
-public class CONT : MonoBehaviour
+
+public class MovePlaer : MonoBehaviour
 {
-    public MeshRenderer loo;
-
-
-    private void Awake() 
-   {
-     loo = GetComponent<MeshRenderer>();
-   }
+     
     
-
-   private void Update() 
-   {
     
-    if(Input.GetKeyUp(KeyCode.G))
+    private Rigidbody rb;
+    
+    private void Awake()
     {
-      loo.material.color= Color.black;
+     rb = GetComponent<Rigidbody>();
     }
-  
-if(Input.GetKeyUp(KeyCode.H))
+  public float speed1 = 4,speed2 = 4;
+    private void FixedUpdate() 
     {
-      loo.material.color= Color.green;
+     float h = Input.GetAxis("Horizontal") * speed1 * Time.fixedDeltaTime ;
+     float v = Input.GetAxis("Vertical") * speed2 * Time.fixedDeltaTime;
+     
+      rb.velocity = transform.TransformDirection(new Vector3(-v,rb.velocity.y,h));
+    }
+public float thrust = 500f;
+
+    private void OnCollisionEnter(Collision other)
+    {
+      if(other.gameObject.name == "Cube (8)")
+      {
+       rb.AddForce(new Vector3 (0,1,0) * thrust);
+      } 
     }
 
-if(Input.GetKeyUp(KeyCode.J))
+    private void OnCollisionExit(Collision other)
     {
-      loo.material.color= Color.red;
+    //  Debug.Log("HELLO"); 
     }
-   }
-   
-   
-                 
- 
+
+    private void OnTriggerEnter(Collider other) 
+    {
+     if(other.gameObject.name == "box")
+     {
+      Debug.Log("box by");
+      
+     }
+    }
 }
 
+
+  
+
+//  КОРЗИНА\/
+// float m = Input.GetAxis("Vertical");
+  //  transform.Translate(new Vector3(-1,0,0) * SpeedPlayer * Time.deltaTime * m );
+
+    //  float o = Input.GetAxis("Horizontal");
+    //  transform.Translate(new Vector3(0,1,0) * SpeedPlayer * Time.deltaTime * o );
 
 
 
