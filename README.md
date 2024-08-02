@@ -1,21 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+ 
+using TMPro;
 
-public class RotatCamer : MonoBehaviour
-{   public Transform tfrm;
-    private float LimitationX = 0f;
-    public float SensitivitiMouse = 100f;
-    
 
-    void Update()
+
+public class PleyerCont : MonoBehaviour
+{
+     public Rigidbody or;
+    public TMP_Text scoreText;
+    private int count = 0;
+        public float speed = 6f;
+
+    private void Awake() 
     {
-     float mouseX = Input.GetAxis("Mouse X")*SensitivitiMouse*Time.deltaTime;
-     float mouseY = Input.GetAxis("Mouse Y")*SensitivitiMouse*Time.deltaTime;
-     LimitationX -= mouseY;
-      
-     transform.localRotation= Quaternion.Euler(LimitationX,0f,0f);
-     LimitationX = Mathf.Clamp(LimitationX,-90,90);
-     tfrm.Rotate(Vector3.up * mouseX);
+     or=GetComponent<Rigidbody>();  
+     
+    }      
+
+  
+    private void FixedUpdate()      
+    {
+     float h = Input.GetAxis("Horizontal");
+     float v = Input.GetAxis("Vertical"); 
+     or.velocity = new Vector3(h,or.velocity.y,v) * speed * Time.fixedDeltaTime;
+     
     }
-}
+     private void OnTriggerEnter(Collider other) 
+     {
+      if(other.gameObject.tag=="production")
+      { count++;
+        Destroy(other.gameObject);
+        if(count != 5)
+          scoreText.text = "production" + count;           
+        else
+        scoreText.text = "you Win";
+
+      } 
+     }
+    
+  
+} 
+
+
+   
+
