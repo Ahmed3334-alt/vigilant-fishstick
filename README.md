@@ -1,47 +1,28 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
- 
-using TMPro;
 
-
-
-public class PleyerCont : MonoBehaviour
+public class VESHON : MonoBehaviour
 {
-     public Rigidbody or;
-    public TMP_Text scoreText;
-    private int count = 0;
-        public float speed = 6f;
+public Transform body;
+public float Sensitiviti = 0f;
+private float limitation = 0f;
 
-    private void Awake() 
+    void Start()
     {
-     or=GetComponent<Rigidbody>();  
-     
-    }      
-
-  
-    private void FixedUpdate()      
-    {
-     float h = Input.GetAxis("Horizontal");
-     float v = Input.GetAxis("Vertical"); 
-     or.velocity = new Vector3(h,or.velocity.y,v) * speed * Time.fixedDeltaTime;
-     
+     Cursor.lockState = CursorLockMode.Locked;   
     }
-     private void OnTriggerEnter(Collider other) 
-     {
-      if(other.gameObject.tag=="production")
-      { count++;
-        Destroy(other.gameObject);
-        if(count != 5)
-          scoreText.text = "production" + count;           
-        else
-        scoreText.text = "you Win";
 
-      } 
-     }
-    
-  
-} 
+    void Update()
+    {
+      float mouseX = Input.GetAxis("Mouse X") * Sensitiviti * Time.deltaTime;
+      float mouseY = Input.GetAxis("Mouse Y") * Sensitiviti * Time.deltaTime;
+      
+      limitation -= mouseY;
+      limitation = Mathf.Clamp(limitation,-90,90);
+      transform.localRotation = Quaternion.Euler(limitation,0,0);
+      body.Rotate(Vector3.up,+mouseX);
+    }
 
-
-   
-
+}
